@@ -6,19 +6,18 @@ import org.json.JSONObject;
 import com.instagram.exception.InstagramException;
 
 public class Tag extends InstagramModel {
-	
+
 	int mediaCount;
 	String name;
-	
 
 	public Tag(JSONObject obj, String accessToken) throws InstagramException {
 		super(obj, accessToken);
-		try{
-			
+		try {
+
 			setName(obj.getString("name"));
 			setMediaCount(obj.getInt("media_count"));
 
-		} catch(JSONException e) {
+		} catch (JSONException e) {
 			throw new InstagramException("JSON parsing error");
 		}
 	}
@@ -37,5 +36,5 @@ public class Tag extends InstagramModel {
 
 	public String getName() {
 		return name;
-	}	
+	}
 }

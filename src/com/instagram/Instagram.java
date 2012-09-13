@@ -1,4 +1,5 @@
 package com.instagram;
+
 import com.instagram.util.UriConstructor;
 import com.instagram.auth.AccessToken;
 import com.instagram.exception.InstagramException;
@@ -18,54 +19,52 @@ public class Instagram {
 	String clientSecret;
 	AccessToken accessToken;
 	User sessionUser;
-	
+
 	public InstagramSession session() {
 		return session;
 	}
-	
+
 	protected void setSession(InstagramSession session) {
 		this.session = session;
 	}
-	
+
 	protected String getRedirectUri() {
 		return redirectUri;
 	}
-	
+
 	public Instagram setRedirectUri(String redirectUri) {
 		this.redirectUri = redirectUri;
 		return this;
 	}
-	
+
 	protected String getClientId() {
 		return clientId;
 	}
-	
+
 	public Instagram setClientId(String clientId) {
 		this.clientId = clientId;
 		return this;
 	}
-	
+
 	public String getAuthorizationUri() throws InstagramException {
-		if(	getClientId() == null ||
-				getRedirectUri() == null) {
-				throw new InstagramException("Please make sure that the " +
-						"clientId and redirectUri fields are set");
+		if (getClientId() == null || getRedirectUri() == null) {
+			throw new InstagramException("Please make sure that the "
+					+ "clientId and redirectUri fields are set");
 		}
 		HashMap<String, Object> args = new HashMap<String, Object>();
 		args.put("client_id", getClientId());
 		args.put("redirect_uri", getRedirectUri());
 		args.put("response_type", "code");
 		args.put("scope", "likes+comments+relationships+basic");
-		return (new UriConstructor())
-				.constructUri(UriFactory.Auth.USER_AUTHORIZATION, args, false);
+		return (new UriConstructor()).constructUri(
+				UriFactory.Auth.USER_AUTHORIZATION, args, false);
 	}
-	
+
 	public Instagram build(String code) throws InstagramException {
-		if(getClientSecret() == null ||
-			getClientId() == null ||
-			getRedirectUri() == null) {
-			throw new InstagramException("Please make sure that the" +
-					"clientId, clientSecret and redirectUri fields are set");
+		if (getClientSecret() == null || getClientId() == null
+				|| getRedirectUri() == null) {
+			throw new InstagramException("Please make sure that the"
+					+ "clientId, clientSecret and redirectUri fields are set");
 		}
 		HashMap<String, Object> postArgs = new HashMap<String, Object>();
 		postArgs.put("client_id", getClientId());
@@ -74,28 +73,33 @@ public class Instagram {
 		postArgs.put("redirect_uri", getRedirectUri());
 		postArgs.put("code", code);
 
-		/*JSONObject response = (new PostMethod()
-								.setPostParameters(postArgs)
-								.setMethodURI(UriFactory.Auth.GET_ACCESS_TOKEN)
-							  ).call();
-		*/
+		/*
+		 * JSONObject response = (new PostMethod() .setPostParameters(postArgs)
+		 * .setMethodURI(UriFactory.Auth.GET_ACCESS_TOKEN) ).call();
+		 */
 		try {
-		//	setAccessToken(new AccessToken(response.getString("access_token")));
-			setAccessToken(new AccessToken("143577682.2b2ca2d.331f50cbb6b44e359668c93546c5f7a3"));
-			//setSessionUser(new User(response.getJSONObject("user"), getAccessToken().getTokenString()));
-		//setSession(new InstagramSession(getAccessToken(), getSessionUser()));
-			//setSession(new InstagramSession(getAccessToken(), null));
-		} catch(Exception e) {
+			// setAccessToken(new
+			// AccessToken(response.getString("access_token")));
+			setAccessToken(new AccessToken(
+					"143577682.2b2ca2d.331f50cbb6b44e359668c93546c5f7a3"));
+			// setSessionUser(new User(response.getJSONObject("user"),
+			// getAccessToken().getTokenString()));
+			// setSession(new InstagramSession(getAccessToken(),
+			// getSessionUser()));
+			// setSession(new InstagramSession(getAccessToken(), null));
+		} catch (Exception e) {
 			throw new InstagramException("JSON parsing error");
 		}
 		return this;
 	}
 
 	public AccessToken getAccessToken() throws InstagramException {
-		if(accessToken == null)
-			throw new InstagramException("Token has not been fetched, please call build(String code) "
-					+"before calling getAccessToken()");
-		else return accessToken;
+		if (accessToken == null)
+			throw new InstagramException(
+					"Token has not been fetched, please call build(String code) "
+							+ "before calling getAccessToken()");
+		else
+			return accessToken;
 	}
 
 	protected void setAccessToken(AccessToken accessToken) {
@@ -118,6 +122,5 @@ public class Instagram {
 		this.clientSecret = clientSecret;
 		return this;
 	}
-	
-	
+
 }
