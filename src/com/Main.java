@@ -25,10 +25,7 @@ public class Main {
 
 			InstagramSession session = new InstagramSession(
 					instagram.getAccessToken());
-			for (Tag tag : session.searchTags("yolo")) {
-				System.out.println(tag.getName() + ", count: "
-						+ tag.getMediaCount());
-			}
+			System.out.println(session.searchUsersByName("instagram").get(0).getId());
 
 		} catch (Exception e) {
 			e.printStackTrace();

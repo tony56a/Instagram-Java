@@ -211,7 +211,7 @@ public class Media extends InstagramModel {
 	
 			this.setCreatedTimestamp(obj.getString("created_time"));
 			this.setFilter(obj.getString("filter"));
-			this.setLink(obj.getString("link"));
+			this.setLink(obj.optString("link"));
 			this.setId(obj.getString("id"));
 			this.setType(obj.getString("type"));
 			this.setUser(new User(obj.getJSONObject("user"), accessToken));
