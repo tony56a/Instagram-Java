@@ -32,15 +32,16 @@ public class InstagramSessionTest {
 	@Test
 	public void testGetRecentPublishedMedia() throws InstagramException {
 		InstagramSession session = this.getNewSession();
-		
+
 		/*
 		 * Test for an invalid page number it should throw an InstagramException
 		 */
 		try {
 			session.getRecentPublishedMedia(Constants.VALID_USER_ID, 0);
 			fail("No Exception thrown for out of bounds page");
-		} catch (InstagramException e) {}
-		
+		} catch (InstagramException e) {
+		}
+
 		/*
 		 * Test that no Exception is thrown for a valid user id and page number
 		 */
@@ -50,37 +51,39 @@ public class InstagramSessionTest {
 	@Test
 	public void testGetFeed() throws InstagramException {
 		InstagramSession session = this.getNewSession();
-		
+
 		/*
 		 * Test for an invalid page number it should throw an InstagramException
 		 */
 		try {
 			session.getFeed(0);
 			fail("No Exception thrown for out of bounds page");
-		} catch (InstagramException e) {}
-		
+		} catch (InstagramException e) {
+		}
+
 		/*
 		 * Test that no Exception is thrown for a valid page number
 		 */
-		session.getFeed(1);	
+		session.getFeed(1);
 	}
 
 	@Test
 	public void testGetLikedMedia() throws InstagramException {
 		InstagramSession session = this.getNewSession();
-		
+
 		/*
 		 * Test for an invalid page number it should throw an InstagramException
 		 */
 		try {
 			session.getLikedMedia(0);
 			fail("No Exception thrown for out of bounds page");
-		} catch (InstagramException e) {}
-		
+		} catch (InstagramException e) {
+		}
+
 		/*
 		 * Test that no Exception is thrown for a valid page number
 		 */
-		session.getLikedMedia(1);	
+		session.getLikedMedia(1);
 	}
 
 	@Test
@@ -93,7 +96,10 @@ public class InstagramSessionTest {
 
 	@Test
 	public void testSearchMedia() throws InstagramException {
-		fail("Not yet implemented");
+		/*
+		 * Test that no Exception is thrown
+		 */
+		getNewSession().searchMedia(48.858844, 2.294351, null, null, null);
 	}
 
 	@Test
@@ -101,11 +107,11 @@ public class InstagramSessionTest {
 		/*
 		 * Test that no Exception is thrown
 		 */
-		getNewSession().getPopularMedia();	
+		getNewSession().getPopularMedia();
 	}
 
 	@Test
-	public void testSearchUsersByName() throws InstagramException {		
+	public void testSearchUsersByName() throws InstagramException {
 		/*
 		 * Test that no Exception is thrown
 		 */
@@ -115,15 +121,16 @@ public class InstagramSessionTest {
 	@Test
 	public void testGetFollows() throws InstagramException {
 		InstagramSession session = this.getNewSession();
-		
+
 		/*
 		 * Test for an invalid page number it should throw an InstagramException
 		 */
 		try {
 			session.getFollows(Constants.VALID_USER_ID, 0);
 			fail("No Exception thrown for out of bounds page");
-		} catch (InstagramException e) {}
-		
+		} catch (InstagramException e) {
+		}
+
 		/*
 		 * Test that no Exception is thrown for a valid page number and user id
 		 */
@@ -133,15 +140,16 @@ public class InstagramSessionTest {
 	@Test
 	public void testGetFollowers() throws InstagramException {
 		InstagramSession session = this.getNewSession();
-		
+
 		/*
 		 * Test for an invalid page number it should throw an InstagramException
 		 */
 		try {
 			session.getFollowers(Constants.VALID_USER_ID, 0);
 			fail("No Exception thrown for out of bounds page");
-		} catch (InstagramException e) {}
-		
+		} catch (InstagramException e) {
+		}
+
 		/*
 		 * Test that no Exception is thrown for a valid page number and user id
 		 */
@@ -171,7 +179,8 @@ public class InstagramSessionTest {
 		 */
 		InstagramSession session = getNewSession();
 		Relationship.Action action = null;
-		if(session.getRelationshipWith(Constants.VALID_USER_ID).getOutgoingStatus() == Relationship.OutgoingStatus.FOLLOWS)
+		if (session.getRelationshipWith(Constants.VALID_USER_ID)
+				.getOutgoingStatus() == Relationship.OutgoingStatus.FOLLOWS)
 			action = Relationship.Action.UNFOLLOW;
 		else
 			action = Relationship.Action.FOLLOW;
@@ -190,11 +199,13 @@ public class InstagramSessionTest {
 	}
 
 	@Test
-	public void testRemoveComment() throws InstagramException {
+	public void testRemoveComment() throws InstagramException,
+			InterruptedException {
 		Random rand = new Random(19580427);
 		InstagramSession session = getNewSession();
 		Media media = session.getPopularMedia().get(rand.nextInt() % 10);
 		Comment comment = session.postComment(media.getId(), "nice pic");
+		Thread.sleep(5);
 		/*
 		 * Test that no Exception is thrown for a valid comment id
 		 */
@@ -227,8 +238,9 @@ public class InstagramSessionTest {
 		try {
 			session.getRecentMediaForTag("yolo", 0);
 			fail("No Exception thrown for out of bounds page");
-		} catch (InstagramException e) {}
-		
+		} catch (InstagramException e) {
+		}
+
 		/*
 		 * Test that no Exception is thrown for a valid page number and tag
 		 */
@@ -238,7 +250,7 @@ public class InstagramSessionTest {
 	@Test
 	public void testSearchTags() throws InstagramException {
 		/*
-		 * Test that no Exception is thrown 
+		 * Test that no Exception is thrown
 		 */
 		getNewSession().searchTags("yolo");
 	}
@@ -246,7 +258,7 @@ public class InstagramSessionTest {
 	@Test
 	public void testGetLocation() throws InstagramException {
 		/*
-		 * Test that no Exception is thrown 
+		 * Test that no Exception is thrown
 		 */
 		getNewSession().getLocation(Constants.VALID_LOCATION_ID);
 	}
@@ -260,13 +272,13 @@ public class InstagramSessionTest {
 		try {
 			session.getRecentMediaFromLocation(Constants.VALID_LOCATION_ID, 0);
 			fail("No Exception thrown for out of bounds page");
-		} catch (InstagramException e) {}
-		
+		} catch (InstagramException e) {
+		}
+
 		/*
 		 * Test that no Exception is thrown for a valid page number and tag
 		 */
 		session.getRecentMediaFromLocation(Constants.VALID_LOCATION_ID, 1);
 	}
-
 
 }
