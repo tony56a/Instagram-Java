@@ -3,11 +3,13 @@ package com.instagram.test;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.Random;
 
 import com.instagram.InstagramSession;
 import com.instagram.auth.AccessToken;
 import com.instagram.exception.InstagramException;
 import com.instagram.model.Comment;
+import com.instagram.model.Media;
 import com.instagram.model.Relationship;
 
 import org.json.JSONException;
@@ -17,26 +19,6 @@ public class InstagramSessionTest {
 
 	private InstagramSession getNewSession() {
 		return new InstagramSession(new AccessToken(Constants.ACCESS_TOKEN));
-	}
-
-	@Test
-	public void testInstagramSession() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testInstagramSessionAccessToken() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetAccessToken() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetAccessToken() {
-		fail("Not yet implemented");
 	}
 
 	@Test
@@ -201,54 +183,89 @@ public class InstagramSessionTest {
 		/*
 		 * Test that no Exception is thrown for a valid user id
 		 */
+		Random rand = new Random(19580427);
 		InstagramSession session = getNewSession();
-		Comment comment = session.postComment(Constants.VALID_MEDIA_ID, "nice pic");
-		session.removeComment(Constants.VALID_MEDIA_ID, comment.getId());
+		Media media = session.getPopularMedia().get(rand.nextInt() % 10);
+		Comment comment = session.postComment(media.getId(), "nice pic");
 	}
 
 	@Test
 	public void testRemoveComment() throws InstagramException {
+		Random rand = new Random(19580427);
 		InstagramSession session = getNewSession();
-		Comment comment = session.postComment(Constants.VALID_MEDIA_ID, "nice pic");
+		Media media = session.getPopularMedia().get(rand.nextInt() % 10);
+		Comment comment = session.postComment(media.getId(), "nice pic");
 		/*
 		 * Test that no Exception is thrown for a valid comment id
 		 */
-		assertTrue(session.removeComment(Constants.VALID_MEDIA_ID, comment.getId()));
+		assertTrue(session.removeComment(media.getId(), comment.getId()));
 	}
 
 	@Test
-	public void testLikeMedia() {
-		fail("Not yet implemented");
+	public void testLikingAndUnlikingMedia() throws InstagramException {
+		Random rand = new Random(19580427);
+		InstagramSession session = getNewSession();
+		Media media = session.getPopularMedia().get(rand.nextInt() % 10);
+		session.likeMedia(media.getId());
+		session.removeMediaLike(media.getId());
 	}
 
 	@Test
-	public void testRemoveMediaLike() {
-		fail("Not yet implemented");
+	public void testGetTag() throws InstagramException {
+		/*
+		 * Test that no Exception is thrown for a tag
+		 */
+		getNewSession().getTag("yolo");
 	}
 
 	@Test
-	public void testGetTag() {
-		fail("Not yet implemented");
+	public void testGetRecentMediaForTag() throws InstagramException {
+		InstagramSession session = getNewSession();
+		/*
+		 * Test for an invalid page number it should throw an InstagramException
+		 */
+		try {
+			session.getRecentMediaForTag("yolo", 0);
+			fail("No Exception thrown for out of bounds page");
+		} catch (InstagramException e) {}
+		
+		/*
+		 * Test that no Exception is thrown for a valid page number and tag
+		 */
+		session.getRecentMediaForTag("yolo", 1);
 	}
 
 	@Test
-	public void testGetRecentMediaForTag() {
-		fail("Not yet implemented");
+	public void testSearchTags() throws InstagramException {
+		/*
+		 * Test that no Exception is thrown 
+		 */
+		getNewSession().searchTags("yolo");
 	}
 
 	@Test
-	public void testSearchTags() {
-		fail("Not yet implemented");
+	public void testGetLocation() throws InstagramException {
+		/*
+		 * Test that no Exception is thrown 
+		 */
+		getNewSession().getLocation(Constants.VALID_LOCATION_ID);
 	}
 
 	@Test
-	public void testGetLocation() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetRecentMediaFromLocation() {
-		fail("Not yet implemented");
+	public void testGetRecentMediaFromLocation() throws InstagramException {
+		InstagramSession session = getNewSession();
+		/*
+		 * Test for an invalid page number it should throw an InstagramException
+		 */
+		try {
+			session.getRecentMediaFromLocation(Constants.VALID_LOCATION_ID, 0);
+			fail("No Exception thrown for out of bounds page");
+		} catch (InstagramException e) {}
+		
+		/*
+		 * Test that no Exception is thrown for a valid page number and tag
+		 */
+		session.getRecentMediaFromLocation(Constants.VALID_LOCATION_ID, 1);
 	}
 
 

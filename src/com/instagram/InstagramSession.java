@@ -532,7 +532,11 @@ public class InstagramSession {
 		map.put("comment_id", commentId);
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Comments.DELETE_MEDIA_COMMENT, map, true);
-		object = (new DeleteMethod().setMethodURI(uriString)).call();
+		try {
+			object = (new DeleteMethod().setMethodURI(uriString)).call();
+		} catch(InstagramException e) {
+			throw new InstagramException("Comment cannot be deleted");
+		}
 		try {
 			return object.getJSONObject("meta").getInt("code") == 200;
 		} catch (JSONException e) {
@@ -540,7 +544,7 @@ public class InstagramSession {
 		}
 	}
 
-	public boolean likeMedia(String mediaId) throws JSONException,
+	public boolean likeMedia(String mediaId) throws 
 			InstagramException {
 		JSONObject object = null;
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -551,10 +555,14 @@ public class InstagramSession {
 				UriFactory.Likes.SET_LIKE, map, false);
 		object = (new PostMethod().setPostParameters(args)
 				.setMethodURI(uriString)).call();
-		return object.getJSONObject("meta").getInt("code") == 200;
+		try{
+			return object.getJSONObject("meta").getInt("code") == 200;
+		} catch(JSONException e) {
+			throw new InstagramException("JSON parsing error");
+		}
 	}
 
-	public boolean removeMediaLike(String mediaId) throws JSONException,
+	public boolean removeMediaLike(String mediaId) throws 
 			InstagramException {
 		JSONObject object = null;
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -562,60 +570,79 @@ public class InstagramSession {
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Likes.REMOVE_LIKE, map, true);
 		object = (new DeleteMethod().setMethodURI(uriString)).call();
-		return object.getJSONObject("meta").getInt("code") == 200;
+		try{
+			return object.getJSONObject("meta").getInt("code") == 200;
+		} catch(JSONException e) {
+			throw new InstagramException("JSON parsing error");
+		}
 	}
 
-	public Tag getTag(String tagName) throws JSONException, InstagramException {
+	public Tag getTag(String tagName) throws InstagramException {
 		JSONObject object = null;
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("tag_name", tagName);
 		String uriString = uriConstructor.constructUri(UriFactory.Tags.GET_TAG,
 				map, true);
 		object = (new GetMethod().setMethodURI(uriString)).call();
-		return new Tag(object.getJSONObject("data"), getAccessToken());
+		try {
+			return new Tag(object.getJSONObject("data"), getAccessToken());
+		} catch(JSONException e) {
+			throw new InstagramException("JSON parsing error");
+		}
 	}
 
 	public List<Media> getRecentMediaForTag(String tagName, int pageNumber)
-			throws JSONException, InstagramException {
-		assert (pageNumber > 0);
+			throws InstagramException {
+		if (pageNumber <= 0) {
+			throw new InstagramException(
+					"The page number must be greater than 0");
+		}
 		JSONObject object = null;
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("tag_name", tagName);
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Tags.GET_RECENT_TAGED_MEDIA, map, true);
-
-		for (int i = 0; i < pageNumber; i++) {
-			object = (new GetMethod().setMethodURI(uriString)).call();
-			if (object.getJSONObject("pagination").has("next_url"))
-				uriString = object.getJSONObject("pagination").getString(
-						"next_url");
-			else
-				break;
+		
+		try{
+			for (int i = 0; i < pageNumber; i++) {
+				object = (new GetMethod().setMethodURI(uriString)).call();
+				if (object.getJSONObject("pagination").has("next_url"))
+					uriString = object.getJSONObject("pagination").getString(
+							"next_url");
+				else
+					break;
+			}
+	
+			ArrayList<Media> media = new ArrayList<Media>();
+			JSONArray mediaItems = object.getJSONArray("data");
+			for (int i = 0; i < mediaItems.length(); i++) {
+				media.add(new Media(mediaItems.getJSONObject(i), getAccessToken()));
+			}
+			return media;
+		} catch(JSONException e) {
+			throw new InstagramException("JSON parsing error");
 		}
-
-		ArrayList<Media> media = new ArrayList<Media>();
-		JSONArray mediaItems = object.getJSONArray("data");
-		for (int i = 0; i < mediaItems.length(); i++) {
-			media.add(new Media(mediaItems.getJSONObject(i), getAccessToken()));
-		}
-		return media;
 	}
 
-	public List<Tag> searchTags(String tagName) throws JSONException,
+	public List<Tag> searchTags(String tagName) throws 
 			InstagramException {
 		JSONObject object = null;
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Tags.SEARCH_TAGS, null, true) + "&q=" + tagName;
 		object = (new GetMethod().setMethodURI(uriString)).call();
 		ArrayList<Tag> tags = new ArrayList<Tag>();
-		JSONArray tagItems = object.getJSONArray("data");
-		for (int i = 0; i < tagItems.length(); i++) {
-			tags.add(new Tag(tagItems.getJSONObject(i), getAccessToken()));
+		try{
+			JSONArray tagItems = object.getJSONArray("data");
+			for (int i = 0; i < tagItems.length(); i++) {
+				tags.add(new Tag(tagItems.getJSONObject(i), getAccessToken()));
+			}
+			return tags;
+		} catch(JSONException e) {
+			throw new InstagramException("JSON parsing error");
 		}
-		return tags;
 	}
 
-	public Location getLocation(int locationId) throws JSONException,
+	public Location getLocation(int locationId) throws 
 			InstagramException {
 		JSONObject object = null;
 		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -623,33 +650,43 @@ public class InstagramSession {
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Locations.GET_LOCATION, map, true);
 		object = (new GetMethod().setMethodURI(uriString)).call();
-		return new Location(object.getJSONObject("data"), getAccessToken());
+		try {
+			return new Location(object.getJSONObject("data"), getAccessToken());
+		} catch(JSONException e) {
+			throw new InstagramException("JSON parsing error");
+		}
 	}
 
 	public List<Media> getRecentMediaFromLocation(int locationId, int pageNumber)
-			throws JSONException, InstagramException {
-		assert (pageNumber > 0);
+			throws InstagramException {
+		if (pageNumber <= 0) {
+			throw new InstagramException(
+					"The page number must be greater than 0");
+		}
 		JSONObject object = null;
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("location_id", locationId);
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Locations.GET_MEDIA_FROM_LOCATION, map, true);
 
-		for (int i = 0; i < pageNumber; i++) {
-			object = (new GetMethod().setMethodURI(uriString)).call();
-			if (object.getJSONObject("pagination").has("next_url"))
-				uriString = object.getJSONObject("pagination").getString(
-						"next_url");
-			else
-				break;
-		}
-
-		ArrayList<Media> media = new ArrayList<Media>();
-		JSONArray mediaItems = object.getJSONArray("data");
-		for (int i = 0; i < mediaItems.length(); i++) {
-			media.add(new Media(mediaItems.getJSONObject(i), getAccessToken()));
-		}
-		return media;
+		try {
+			for (int i = 0; i < pageNumber; i++) {
+				object = (new GetMethod().setMethodURI(uriString)).call();
+				if (object.getJSONObject("pagination").has("next_url"))
+					uriString = object.getJSONObject("pagination").getString(
+							"next_url");
+				else
+					break;
+			}
+			ArrayList<Media> media = new ArrayList<Media>();
+			JSONArray mediaItems = object.getJSONArray("data");
+			for (int i = 0; i < mediaItems.length(); i++) {
+				media.add(new Media(mediaItems.getJSONObject(i), getAccessToken()));
+			}
+			return media;
+		} catch(JSONException e) {
+			throw new InstagramException("JSON parsing error");
+		}	
 	}
 
 }

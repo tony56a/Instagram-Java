@@ -21,7 +21,8 @@ public class Main {
 					.setClientId("2b2ca2d2d162478b97f7626114d294e9")
 					.setRedirectUri("https://github.com/sola92")
 					.setClientSecret("dd859148a795427a98f1d9da817a6902")
-					.build("a3c0484e2315448e85f37f2d088c4a7d");
+					.build("c98d75ffcd7346dcaa6818dd555d62a8");
+			System.out.println("Token is => " + instagram.getAccessToken().getTokenString());
 
 			InstagramSession session = new InstagramSession(
 					instagram.getAccessToken());

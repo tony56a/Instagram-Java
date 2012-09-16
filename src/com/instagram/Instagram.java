@@ -73,20 +73,18 @@ public class Instagram {
 		postArgs.put("redirect_uri", getRedirectUri());
 		postArgs.put("code", code);
 
-		/*
-		 * JSONObject response = (new PostMethod() .setPostParameters(postArgs)
-		 * .setMethodURI(UriFactory.Auth.GET_ACCESS_TOKEN) ).call();
-		 */
+		
+		  JSONObject response = (new PostMethod() .setPostParameters(postArgs)
+		  .setMethodURI(UriFactory.Auth.GET_ACCESS_TOKEN) ).call();
+		 
 		try {
-			// setAccessToken(new
-			// AccessToken(response.getString("access_token")));
+			setAccessToken(new
+					AccessToken(response.getString("access_token")));
 			setAccessToken(new AccessToken(
 					"143577682.2b2ca2d.331f50cbb6b44e359668c93546c5f7a3"));
-			// setSessionUser(new User(response.getJSONObject("user"),
-			// getAccessToken().getTokenString()));
-			// setSession(new InstagramSession(getAccessToken(),
-			// getSessionUser()));
-			// setSession(new InstagramSession(getAccessToken(), null));
+			 setSessionUser(new User(response.getJSONObject("user"),
+					 getAccessToken().getTokenString()));
+			 setSession(new InstagramSession(getAccessToken()));
 		} catch (Exception e) {
 			throw new InstagramException("JSON parsing error");
 		}
