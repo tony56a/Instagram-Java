@@ -295,7 +295,8 @@ public class Media extends InstagramModel {
 				map.put("media_id", getId());
 				JSONObject object = (new GetMethod()
 									.setMethodURI(uriConstructor.constructUri(UriFactory.Comments.GET_MEDIA_COMMENTS, map, true))
-									).call();
+									)
+									.call().getJSON();
 				ArrayList<Comment> comments =  new ArrayList<Comment>();
 				JSONArray commentObjects = object.getJSONArray("data");
 				for(int i = 0; i < commentObjects.length(); i++) {
@@ -436,7 +437,7 @@ public class Media extends InstagramModel {
 				map.put("media_id", getId());
 				JSONObject object = (new GetMethod()
 									.setMethodURI(uriConstructor.constructUri(UriFactory.Likes.GET_LIKERS, map, true))
-									).call();
+									).call().getJSON();
 				ArrayList<User> likers =  new ArrayList<User>();
 				JSONArray likerUserObjects = object.getJSONArray("data");
 				for(int i = 0; i < likerUserObjects.length(); i++) {

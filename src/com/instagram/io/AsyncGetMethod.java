@@ -1,21 +1,20 @@
 package com.instagram.io;
-import org.apache.http.client.methods.HttpGet;
 import java.io.InputStream;
 
-
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import org.apache.http.HttpResponse;
-
-public class GetMethod extends APIMethod {
+public class AsyncGetMethod extends AsyncAPIMethod {
 	DefaultHttpClient client;
 	
-	public GetMethod() {
-		super();
-		this.type = "GET";
+	public AsyncGetMethod(String uri, RequestListener listener) {
+		this.setMethodURI(uri);
+		this.setCallback(listener);
 		this.client = new DefaultHttpClient();
 	}
-	
+
+
 	@Override
 	protected InputStream performRequest() {
 		HttpResponse response;
@@ -29,4 +28,5 @@ public class GetMethod extends APIMethod {
 		}  
 		return stream;
 	}
+	
 }

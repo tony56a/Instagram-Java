@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
@@ -28,7 +29,7 @@ public class PostMethod extends APIMethod {
 	
 	
 	@Override
-	protected BufferedReader performRequest() {
+	protected InputStream performRequest() {
 		HttpResponse response;
 		BufferedReader rd = null;
 		HttpPost post = new HttpPost(this.methodUri);
@@ -36,15 +37,15 @@ public class PostMethod extends APIMethod {
 		for (Map.Entry<String, Object> arg : postParameters.entrySet()) {
 			nameValuePairs.add(new BasicNameValuePair(arg.getKey(), arg.getValue().toString()));
 		}
-				
+		InputStream stream = null;
 		try {
 			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 			response = client.execute(post);
-			rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			stream = response.getEntity().getContent();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return rd;
+		return stream;
 	}
 
 	

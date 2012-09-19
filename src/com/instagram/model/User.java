@@ -138,7 +138,7 @@ public class User extends InstagramModel {
 			
 			JSONObject userObject = (new GetMethod()
 									.setMethodURI(uriConstructor.constructUri(UriFactory.Users.GET_DATA, map, true))
-									).call();
+									).call().getJSON();
 			
 			if(userObject.has("data")) {
 				JSONObject counts = userObject.getJSONObject("data")

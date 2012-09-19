@@ -1,7 +1,10 @@
 package com.instagram.io;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 
@@ -19,22 +22,18 @@ public class DeleteMethod extends APIMethod {
 	}
 	
 	@Override
-	protected BufferedReader performRequest() {
+	protected InputStream performRequest() {
 		HttpResponse response;
 		BufferedReader rd = null;
 		HttpDelete post = new HttpDelete(this.methodUri);
+		InputStream stream = null;
 		try {
 			response = client.execute(post);
-			rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (IOException e) {
-			// TODO Auto-generated catch block
+			stream = response.getEntity().getContent();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}  
-		return rd;
+		return stream;
 	}
 
 }

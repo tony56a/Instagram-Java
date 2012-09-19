@@ -75,7 +75,7 @@ public class Instagram {
 
 		
 		  JSONObject response = (new PostMethod() .setPostParameters(postArgs)
-		  .setMethodURI(UriFactory.Auth.GET_ACCESS_TOKEN) ).call();
+		  .setMethodURI(UriFactory.Auth.GET_ACCESS_TOKEN) ).call().getJSON();
 		 
 		try {
 			setAccessToken(new

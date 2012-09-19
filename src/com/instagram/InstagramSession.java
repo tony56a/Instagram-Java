@@ -25,10 +25,14 @@ package com.instagram;
  */
 import com.instagram.auth.AccessToken;
 import com.instagram.exception.InstagramException;
+import com.instagram.io.AsyncGetMethod;
 import com.instagram.io.DeleteMethod;
 import com.instagram.io.GetMethod;
 import com.instagram.io.PostMethod;
+import com.instagram.io.RequestDispatcher;
+import com.instagram.io.RequestListener;
 import com.instagram.io.UriFactory;
+import com.instagram.io.RequestResponse;
 import com.instagram.model.*;
 import com.instagram.util.UriConstructor;
 
@@ -90,13 +94,15 @@ public class InstagramSession {
 		try {
 			JSONObject userObject = (new GetMethod()
 					.setMethodURI(uriConstructor.constructUri(
-							UriFactory.Users.GET_DATA, map, true))).call();
-			if (userObject.has("data"))
+							UriFactory.Users.GET_DATA, map, true))).call()
+					.getJSON();
+			if (userObject.has("data")) {
 				return new User(userObject.getJSONObject("data"),
 						getAccessToken());
-			else
+			} else {
 				throw new InstagramException("User with id = " + userId
 						+ " cannot be accessed" + " or may not exist");
+			}
 		} catch (JSONException e) {
 			throw new InstagramException("JSON parsing error");
 		} catch (InstagramException e) {
@@ -106,6 +112,29 @@ public class InstagramSession {
 							+ " cannot be accessed"
 							+ " or may not exist. This user may have deleted their account");
 		}
+	}
+
+	public void asynchGetUserById(int userId, RequestListener callback) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("user_id", userId);
+		String uriString = uriConstructor.constructUri(
+				UriFactory.Users.GET_DATA, map, true);
+		final RequestListener userCallback = callback;
+		final String at = this.getAccessToken();
+		AsyncGetMethod request = new AsyncGetMethod(uriString,
+				new RequestListener() {
+					public void onComplete(Object resp) {
+						JSONObject userData = ((RequestResponse) resp)
+								.getJSON().optJSONObject("data");
+						try {
+							userCallback.onComplete(new User(userData, at));
+						} catch (InstagramException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				});
+		RequestDispatcher.asyncDispatch(request);
 	}
 
 	/**
@@ -136,7 +165,8 @@ public class InstagramSession {
 
 			try {
 				for (int i = 0; i < pageNumber; i++) {
-					object = (new GetMethod().setMethodURI(uriString)).call();
+					object = (new GetMethod().setMethodURI(uriString)).call()
+							.getJSON();
 					if (object.getJSONObject("pagination").has("next_url"))
 						uriString = object.getJSONObject("pagination")
 								.getString("next_url");
@@ -177,7 +207,8 @@ public class InstagramSession {
 			try {
 
 				for (int i = 0; i < pageNumber; i++) {
-					object = (new GetMethod().setMethodURI(uriString)).call();
+					object = (new GetMethod().setMethodURI(uriString)).call()
+							.getJSON();
 					if (object.getJSONObject("pagination").has("next_url"))
 						uriString = object.getJSONObject("pagination")
 								.getString("next_url");
@@ -218,7 +249,8 @@ public class InstagramSession {
 					UriFactory.Users.GET_LIKED_MEDIA, null, true);
 			try {
 				for (int i = 0; i < pageNumber; i++) {
-					object = (new GetMethod().setMethodURI(uriString)).call();
+					object = (new GetMethod().setMethodURI(uriString)).call()
+							.getJSON();
 					if (object.getJSONObject("pagination").has("next_url"))
 						uriString = object.getJSONObject("pagination")
 								.getString("next_url");
@@ -253,7 +285,7 @@ public class InstagramSession {
 		try {
 			JSONObject object = (new GetMethod().setMethodURI(uriConstructor
 					.constructUri(UriFactory.Media.GET_MEDIA, map, true)))
-					.call();
+					.call().getJSON();
 			return (new Media(object.getJSONObject("data"), getAccessToken()));
 		} catch (JSONException e) {
 			throw new InstagramException("JSON parsing error");
@@ -286,7 +318,8 @@ public class InstagramSession {
 				+ getAccessToken() + "&lat=" + latitude + "&lng=" + longitude
 				+ "&min_timestamp=" + minTimestamp + "&max_timestamp="
 				+ maxTimestamp + "&distance=" + distance;
-		JSONObject object = (new GetMethod().setMethodURI(uri)).call();
+		JSONObject object = (new GetMethod().setMethodURI(uri)).call()
+				.getJSON();
 		try {
 			JSONArray mediaItems = object.getJSONArray("data");
 			for (int i = 0; i < mediaItems.length(); i++) {
@@ -311,7 +344,7 @@ public class InstagramSession {
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Media.GET_POPULAR_MEDIA, null, true);
 
-		object = (new GetMethod().setMethodURI(uriString)).call();
+		object = (new GetMethod().setMethodURI(uriString)).call().getJSON();
 
 		try {
 			JSONArray mediaItems = object.getJSONArray("data");
@@ -341,7 +374,7 @@ public class InstagramSession {
 				+ name;
 		try {
 			JSONArray userObjects = (new GetMethod().setMethodURI(uriString))
-					.call().getJSONArray("data");
+					.call().getJSON().getJSONArray("data");
 			for (int i = 0; i < userObjects.length(); i++) {
 				users.add(new User(userObjects.getJSONObject(i),
 						getAccessToken()));
@@ -379,7 +412,8 @@ public class InstagramSession {
 
 		try {
 			for (int i = 0; i < pageNumber; i++) {
-				object = (new GetMethod().setMethodURI(uriString)).call();
+				object = (new GetMethod().setMethodURI(uriString)).call()
+						.getJSON();
 				if (object.getJSONObject("pagination").has("next_url"))
 					uriString = object.getJSONObject("pagination").getString(
 							"next_url");
@@ -413,7 +447,8 @@ public class InstagramSession {
 				UriFactory.Relationships.GET_FOLLOWERS, map, true);
 		try {
 			for (int i = 0; i < pageNumber; i++) {
-				object = (new GetMethod().setMethodURI(uriString)).call();
+				object = (new GetMethod().setMethodURI(uriString)).call()
+						.getJSON();
 				if (object.getJSONObject("pagination").has("next_url"))
 					uriString = object.getJSONObject("pagination").getString(
 							"next_url");
@@ -438,7 +473,7 @@ public class InstagramSession {
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Relationships.GET_FOLLOW_REQUESTS, null, true);
 
-		object = (new GetMethod().setMethodURI(uriString)).call();
+		object = (new GetMethod().setMethodURI(uriString)).call().getJSON();
 
 		JSONArray userObjects;
 		try {
@@ -461,7 +496,7 @@ public class InstagramSession {
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Relationships.GET_RELATIONSHIP_STATUS, map, true);
 
-		object = (new GetMethod().setMethodURI(uriString)).call();
+		object = (new GetMethod().setMethodURI(uriString)).call().getJSON();
 
 		try {
 			return new Relationship(object.getJSONObject("data"),
@@ -504,7 +539,7 @@ public class InstagramSession {
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Relationships.MUTATE_RELATIONSHIP, map, true);
 		object = (new PostMethod().setPostParameters(args)
-				.setMethodURI(uriString)).call();
+				.setMethodURI(uriString)).call().getJSON();
 		try {
 			return object.getJSONObject("meta").getInt("code") == 200;
 		} catch (JSONException e) {
@@ -523,7 +558,7 @@ public class InstagramSession {
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Comments.POST_MEDIA_COMMENT, map, false);
 		object = (new PostMethod().setPostParameters(args)
-				.setMethodURI(uriString)).call();
+				.setMethodURI(uriString)).call().getJSON();
 		try {
 			return new Comment(object.getJSONObject("data"), getAccessToken());
 		} catch (JSONException e) {
@@ -540,7 +575,8 @@ public class InstagramSession {
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Comments.DELETE_MEDIA_COMMENT, map, true);
 		try {
-			object = (new DeleteMethod().setMethodURI(uriString)).call();
+			object = (new DeleteMethod().setMethodURI(uriString)).call()
+					.getJSON();
 		} catch (InstagramException e) {
 			throw new InstagramException("Comment cannot be deleted");
 		}
@@ -560,7 +596,7 @@ public class InstagramSession {
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Likes.SET_LIKE, map, false);
 		object = (new PostMethod().setPostParameters(args)
-				.setMethodURI(uriString)).call();
+				.setMethodURI(uriString)).call().getJSON();
 		try {
 			return object.getJSONObject("meta").getInt("code") == 200;
 		} catch (JSONException e) {
@@ -574,7 +610,7 @@ public class InstagramSession {
 		map.put("media_id", mediaId);
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Likes.REMOVE_LIKE, map, true);
-		object = (new DeleteMethod().setMethodURI(uriString)).call();
+		object = (new DeleteMethod().setMethodURI(uriString)).call().getJSON();
 		try {
 			return object.getJSONObject("meta").getInt("code") == 200;
 		} catch (JSONException e) {
@@ -588,7 +624,7 @@ public class InstagramSession {
 		map.put("tag_name", tagName);
 		String uriString = uriConstructor.constructUri(UriFactory.Tags.GET_TAG,
 				map, true);
-		object = (new GetMethod().setMethodURI(uriString)).call();
+		object = (new GetMethod().setMethodURI(uriString)).call().getJSON();
 		try {
 			return new Tag(object.getJSONObject("data"), getAccessToken());
 		} catch (JSONException e) {
@@ -610,7 +646,8 @@ public class InstagramSession {
 
 		try {
 			for (int i = 0; i < pageNumber; i++) {
-				object = (new GetMethod().setMethodURI(uriString)).call();
+				object = (new GetMethod().setMethodURI(uriString)).call()
+						.getJSON();
 				if (object.getJSONObject("pagination").has("next_url"))
 					uriString = object.getJSONObject("pagination").getString(
 							"next_url");
@@ -634,7 +671,7 @@ public class InstagramSession {
 		JSONObject object = null;
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Tags.SEARCH_TAGS, null, true) + "&q=" + tagName;
-		object = (new GetMethod().setMethodURI(uriString)).call();
+		object = (new GetMethod().setMethodURI(uriString)).call().getJSON();
 		ArrayList<Tag> tags = new ArrayList<Tag>();
 		try {
 			JSONArray tagItems = object.getJSONArray("data");
@@ -653,7 +690,7 @@ public class InstagramSession {
 		map.put("location_id", locationId);
 		String uriString = uriConstructor.constructUri(
 				UriFactory.Locations.GET_LOCATION, map, true);
-		object = (new GetMethod().setMethodURI(uriString)).call();
+		object = (new GetMethod().setMethodURI(uriString)).call().getJSON();
 		try {
 			return new Location(object.getJSONObject("data"), getAccessToken());
 		} catch (JSONException e) {
@@ -675,7 +712,8 @@ public class InstagramSession {
 
 		try {
 			for (int i = 0; i < pageNumber; i++) {
-				object = (new GetMethod().setMethodURI(uriString)).call();
+				object = (new GetMethod().setMethodURI(uriString)).call()
+						.getJSON();
 				if (object.getJSONObject("pagination").has("next_url"))
 					uriString = object.getJSONObject("pagination").getString(
 							"next_url");
