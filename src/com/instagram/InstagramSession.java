@@ -129,7 +129,6 @@ public class InstagramSession {
 						try {
 							userCallback.onComplete(new User(userData, at));
 						} catch (InstagramException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
