@@ -20,9 +20,9 @@ String authUrl = auth.setRedirectUri("your_redirect_url")
 ```java
 InstagramSession session = auth.build("code");
 ```
- And your off
+ You're all set
 ```java 
- session.searchUsersByName("instagram").get(0).getId();
+  User rihanna = session.searchUsersByName("badgalriri").get(0).getId();
 ``` 
 ## Endpoint Examples
 Here are some common endpoint calls. Please refer to the javadoc at `/doc/com/sola/instagram/InstgramSession.html` for the full documentation of the endpoints.
