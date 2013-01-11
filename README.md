@@ -63,14 +63,16 @@ Results are paginated, so the required page must also be indicated. The page num
 
 ### Follow a user
 ```java 
+  int targetUserId = 3;
   // POST /users/3/relationship
-  session.modifyRelationship(2, Relationship.Action.FOLLOW)
+  session.modifyRelationship(targetUserId, Relationship.Action.FOLLOW)
 ```
 
 ### Unfollow a user
 ```java 
+  int targetUserId = 3;
   // POST /users/3/relationship
-  session.modifyRelationship(2, Relationship.Action.UNFOLLOW)
+  session.modifyRelationship(targetUserId, Relationship.Action.UNFOLLOW)
 ```
 ## About me
 * Email : juniorsola@yahoo.com
