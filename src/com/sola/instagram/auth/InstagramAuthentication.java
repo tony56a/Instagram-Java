@@ -61,7 +61,7 @@ public class InstagramAuthentication {
 				UriFactory.Auth.USER_AUTHORIZATION, args, false);
 	}
 
-	public InstagramAuthentication build(String code) throws InstagramException {
+	public InstagramSession build(String code) throws InstagramException {
 		if (getClientSecret() == null || getClientId() == null
 				|| getRedirectUri() == null) {
 			throw new InstagramException("Please make sure that the"
@@ -89,7 +89,7 @@ public class InstagramAuthentication {
 		} catch (Exception e) {
 			throw new InstagramException("JSON parsing error");
 		}
-		return this;
+		return session();
 	}
 
 	public AccessToken getAccessToken() throws InstagramException {
