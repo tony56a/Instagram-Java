@@ -16,12 +16,13 @@ String authUrl = auth.setRedirectUri("your_redirect_url")
   			 	 .setClientId("your_client_id")
   			 	 .getAuthorizationUri();
 ```
- After the user has authorized the app, begin the session by passing the code given in the callback URL
+ After the user has authorized the app, get the access token by passing the code given in the callback URL. 
 ```java
-InstagramSession session = auth.build("code");
+  AccessToken token = auth.build("code");
 ```
- You're all set
+ Create the session using the access token and you're all set
 ```java 
+  InstagramSession session = new InstagramSession(token);
   User rihanna = session.searchUsersByName("badgalriri").get(0);
 ``` 
 ## Endpoint Examples
