@@ -22,7 +22,7 @@ InstagramSession session = auth.build("code");
 ```
  You're all set
 ```java 
-  User rihanna = session.searchUsersByName("badgalriri").get(0).getId();
+  User rihanna = session.searchUsersByName("badgalriri").get(0);
 ``` 
 ## Endpoint Examples
 Here are some common endpoint calls. Please refer to the javadoc at `/doc/com/sola/instagram/InstgramSession.html` for the full documentation of the endpoints.
