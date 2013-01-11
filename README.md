@@ -2,6 +2,11 @@ Instagram for Java
 ==============
 Java wraper for Instagram's API
 
+## Setup
+Include the `/java-instagram.jar` file in your project.
+
+This library had a dependency on Apache HttpClient 4.2.1. It can be downloaded [here](http://hc.apache.org/downloads.cgi).
+
 ## Authentication
  Firstly, build the authorization URL
 ```java
@@ -20,7 +25,7 @@ InstagramSession session = auth.build("code");
  session.searchUsersByName("instagram").get(0).getId();
 ``` 
 ## Endpoint Examples
-Here are some common endpoint calls. Please refer to the javadoc at /doc/com/sola/instagram/InstgramSession.html for the full documentation of the endpoints.
+Here are some common endpoint calls. Please refer to the javadoc at `/doc/com/sola/instagram/InstgramSession.html` for the full documentation of the endpoints.
 
 ### Get basic information about a user 
 ```java
