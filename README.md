@@ -13,7 +13,7 @@ This library had a dependency on Apache HttpClient 4.2.1. It can be downloaded [
 InstagramAuthentication auth =  new InstagramAuthentication();
 String authUrl = auth.setRedirectUri("your_redirect_url")
   			 	 .setClientSecret("your_app_secrect")
-  			 	 .setClientId("your_cliend_id")
+  			 	 .setClientId("your_client_id")
   			 	 .getAuthorizationUri();
 ```
  After the user has authorized the app, begin the session by passing the code given in the callback URL
