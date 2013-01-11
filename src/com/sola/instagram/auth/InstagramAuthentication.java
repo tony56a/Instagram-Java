@@ -14,21 +14,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class InstagramAuthentication {
-	InstagramSession session;
 	String redirectUri;
 	String clientId;
 	String clientSecret;
 	AccessToken accessToken;
 	User sessionUser;
-
-	public InstagramSession session() {
-		return session;
-	}
-
-	protected void setSession(InstagramSession session) {
-		this.session = session;
-	}
-
+	
 	protected String getRedirectUri() {
 		return redirectUri;
 	}
@@ -61,7 +52,7 @@ public class InstagramAuthentication {
 				UriFactory.Auth.USER_AUTHORIZATION, args, false);
 	}
 
-	public InstagramSession build(String code) throws InstagramException {
+	public AccessToken build(String code) throws InstagramException {
 		if (getClientSecret() == null || getClientId() == null
 				|| getRedirectUri() == null) {
 			throw new InstagramException("Please make sure that the"
@@ -83,11 +74,10 @@ public class InstagramAuthentication {
 					AccessToken(response.getString("access_token")));
 			 setSessionUser(new User(response.getJSONObject("user"),
 					 getAccessToken().getTokenString()));
-			 setSession(new InstagramSession(getAccessToken()));
 		} catch (Exception e) {
 			throw new InstagramException("JSON parsing error");
 		}
-		return session();
+		return getAccessToken();
 	}
 
 	public AccessToken getAccessToken() throws InstagramException {
@@ -103,8 +93,12 @@ public class InstagramAuthentication {
 		this.accessToken = accessToken;
 	}
 
-	public User getSessionUser() {
-		return sessionUser;
+	public User getAuthenticatedUser() throws InstagramException {
+		if (accessToken == null)
+			throw new InstagramException(
+					"No user has been authenticated yet");
+		else
+			return sessionUser;
 	}
 
 	protected void setSessionUser(User sessionUser) {

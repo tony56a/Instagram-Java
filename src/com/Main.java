@@ -24,8 +24,7 @@ public class Main {
 			 	 .setClientId("2b2ca2d2d162478b97f7626114d294e9")
 			 	 .getAuthorizationUri();
 			 
-			InstagramSession session = new InstagramSession(new AccessToken(
-					com.sola.instagram.test.Constants.ACCESS_TOKEN));
+			InstagramSession session = new InstagramSession(auth.build(""));
 			System.out.println(session.searchUsersByName("instagram").get(0)
 					.getId());
 

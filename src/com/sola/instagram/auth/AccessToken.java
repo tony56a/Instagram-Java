@@ -14,4 +14,8 @@ public class AccessToken {
 	public void setTokenString(String token) {
 		this.token = token;
 	}
+
+	public String toString() {
+		return getTokenString();
+	}
 }
