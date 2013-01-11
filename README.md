@@ -1,6 +1,6 @@
 Instagram for Java
 ==============
-Java wraper for Instagram's API v1
+Java wrapper for Instagram's API v1
 
 ## Setup
 Include the `/bin/java-instagram.jar` file in your project.
