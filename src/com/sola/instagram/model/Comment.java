@@ -56,4 +56,15 @@ public class Comment extends InstagramModel {
 		this.sender = sender;
 	}
 
+    /**
+     * Checks if two comment objects are equal
+     * @param o The object to be compared 
+     * @return True of the two objects are equal, false otherwise
+     */
+	public boolean equals(Object o) {
+		if(o == null) return false;
+		if(o == this) return true;
+		if(o.getClass() != this.getClass()) return false;
+		return ((Comment)o).getId().equals(getId());
+	}
 }

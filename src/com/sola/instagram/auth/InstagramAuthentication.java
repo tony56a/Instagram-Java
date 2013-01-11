@@ -81,8 +81,6 @@ public class InstagramAuthentication {
 		try {
 			setAccessToken(new
 					AccessToken(response.getString("access_token")));
-			setAccessToken(new AccessToken(
-					"143577682.2b2ca2d.331f50cbb6b44e359668c93546c5f7a3"));
 			 setSessionUser(new User(response.getJSONObject("user"),
 					 getAccessToken().getTokenString()));
 			 setSession(new InstagramSession(getAccessToken()));

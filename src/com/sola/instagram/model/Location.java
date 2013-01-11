@@ -39,5 +39,15 @@ public class Location extends InstagramModel {
 	public Double getLatitude() {
 		return latitude;
 	}
-	
+    /**
+     * Checks if two location objects are equal
+     * @param o The object to be compared 
+     * @return True of the two objects are equal, false otherwise
+     */
+	public boolean equals(Object o) {
+		if(o == null) return false;
+		if(o == this) return true;
+		if(o.getClass() != this.getClass()) return false;
+		return ((Location)o).getId() == getId();
+	}		
 }

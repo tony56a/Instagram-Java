@@ -37,4 +37,5 @@ public class Tag extends InstagramModel {
 	public String getName() {
 		return name;
 	}
+
 }

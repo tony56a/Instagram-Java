@@ -155,4 +155,11 @@ public class User extends InstagramModel {
 					+ "This user may have deleted their account");
 		}
 	}
+	
+	public boolean equals(Object o) {
+		if(o == null) return false;
+		if(o == this) return true;
+		if(o.getClass() != this.getClass()) return false;
+		return ((User)o).getId() == getId();
+	}
 }

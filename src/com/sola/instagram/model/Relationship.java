@@ -73,5 +73,18 @@ public class Relationship extends InstagramModel {
 			this.incomingStatus = IncomingStatus.NONE;
 		}
 	}
+    /**
+     * Checks if two relationship objects are equal. Relationships
+     * are equal if their incoming and outgoing statuses are the same.
+     * @param o The object to be compared 
+     * @return True of the two objects are equal, false otherwise
+     */
+	public boolean equals(Object o) {
+		if(o == null) return false;
+		if(o == this) return true;
+		if(o.getClass() != this.getClass()) return false;
+		return ((Relationship)o).getIncomingStatus() == getIncomingStatus() &&
+				((Relationship)o).getOutgoingStatus() == getOutgoingStatus();
+	}	
 }
 

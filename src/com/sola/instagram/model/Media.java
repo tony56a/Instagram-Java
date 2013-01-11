@@ -467,6 +467,18 @@ public class Media extends InstagramModel {
 	protected void setTags(List<String> tags) {
 		this.tags = tags;
 	}
+
+    /**
+     * Checks if two media objects are equal
+     * @param o The object to be compared 
+     * @return True of the two objects are equal, false otherwise
+     */
+	public boolean equals(Object o) {
+		if(o == null) return false;
+		if(o == this) return true;
+		if(o.getClass() != this.getClass()) return false;
+		return ((Media)o).getId().equals(getId());
+	}
 	
 	/**
 	 * Object for a media image
@@ -554,6 +566,18 @@ public class Media extends InstagramModel {
 	     */
 		protected void setHeigth(int heigth) {
 			this.heigth = heigth;
+		}
+
+	    /**
+	     * Checks if two image objects are equal
+	     * @param o The object to be compared 
+	     * @return True of the two objects are equal, false otherwise
+	     */
+		public boolean equals(Object o) {
+			if(o == null) return false;
+			if(o == this) return true;
+			if(o.getClass() != this.getClass()) return false;
+			return ((Media.Image)o).getUri().equals(getUri());
 		}
 	}
 	
@@ -677,6 +701,18 @@ public class Media extends InstagramModel {
 	     */
 		protected void setId(String id) {
 			this.id = id;
+		}		
+		
+	    /**
+	     * Checks if two caption objects are equal
+	     * @param o The object to be compared 
+	     * @return True of the two objects are equal, false otherwise
+	     */
+		public boolean equals(Object o) {
+			if(o == null) return false;
+			if(o == this) return true;
+			if(o.getClass() != this.getClass()) return false;
+			return ((Media.Caption)o).getId().equals(getId());
 		}		
 	}
 	
