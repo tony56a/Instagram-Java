@@ -19,11 +19,12 @@ InstagramSession session = auth.build("code");
 ```java 
  session.searchUsersByName("instagram").get(0).getId();
 ``` 
-## Endpoints
+## Endpoint Examples
+Here are some common endpoint calls. Please refer to the javadoc at /doc/com/sola/instagram/InstgramSession.html for the full documentation of the endpoints.
 
 ### Get basic information about a user 
 ```java
-  //Endpoint: GET /users/{user_id}
+  //Endpoint: GET /users/3
   User user = session.getUserById(3);
 ```
 
@@ -34,13 +35,42 @@ Results are paginated, so the required page must also be indicated. The page num
   List<Media> user = session.getFeed(1); //first page
 ```
 
-### Get the most recent media published by a user.
+### Get the most recent media published by a user
 Results are paginated, so the required page must also be indicated. The page number is a 1-based index.
 ```java
-  //Endpoint: GET /users/{user_id}/media/recent
+  //Endpoint: GET /users/3/media/recent
   int userId = 3;
-  int pageNumber = 1;
+  int pageNumber = 1; //first page
   List<Media> recentMedia = session.getRecentPublishedMedia(userId, pageNumber);
+```
+
+### Search for a user by name
+```java
+  //Endpoint: GET /users/search?q=jack
+  List<User> searchResults = session.searchUsersByName("jack");
+```
+
+### Get a user's the followers and follows
+Results are paginated, so the required page must also be indicated. The page number is a 1-based index.
+```java 
+  int userId = 3;
+  int pageNumber = 1; //first page
+  // GET /users/3/follows
+  List<User> follows = session.getFollows(userId, pageNumber); 
+  // GET /users/3/followed-by
+  List<User> followers = session.getFollowers(userId, pageNumber); 
+```
+
+### Follow a user
+```java 
+  // POST /users/3/relationship
+  session.modifyRelationship(2, Relationship.Action.FOLLOW)
+```
+
+### Unfollow a user
+```java 
+  // POST /users/3/relationship
+  session.modifyRelationship(2, Relationship.Action.UNFOLLOW)
 ```
 ## About me
 * Email : juniorsola@yahoo.com
