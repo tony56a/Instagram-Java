@@ -5,7 +5,7 @@ Java wrapper for Instagram's API v1
 ## Setup
 Include the `/bin/java-instagram.jar` file in your project.
 
-This library had a dependency on Apache HttpClient 4.2.1. It can be downloaded [here](http://hc.apache.org/downloads.cgi).
+This library has a dependence on Apache HttpClient 4.2.1. It can be downloaded [here](http://hc.apache.org/downloads.cgi).
 
 ## Authentication
  Firstly, build the authorization URL
