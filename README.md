@@ -80,6 +80,10 @@ Results are paginated, so the required page must also be indicated. The page num
   // POST /users/3/relationship
   session.modifyRelationship(targetUserId, Relationship.Action.UNFOLLOW)
 ```
+## License
+Copyright (c) 2013 Sola Ogunsakin
+Licensed under the MIT license.
+
 ## About me
 * Email : juniorsola@yahoo.com
 * LinkedIn : http://ca.linkedin.com/pub/sola-ogunsakin/45/a5/5a0/
